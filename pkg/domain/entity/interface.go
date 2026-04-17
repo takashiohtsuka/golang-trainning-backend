@@ -1,0 +1,58 @@
+package entity
+
+import (
+	bvo "golang-trainning-backend/pkg/domain/valueobject"
+	"golang-trainning-backend/pkg/domain/collection"
+)
+
+type CompanyEntity interface {
+	IsNil() bool
+	GetID() uint
+	GetName() string
+	GetRank() *string
+	GetIsActive() bool
+}
+
+type StoreEntity interface {
+	IsNil() bool
+	GetID() uint
+	GetCompanyID() uint
+	GetDistrictID() uint
+	GetBusinessType() bvo.BusinessType
+	GetContractPlan() bvo.ContractPlan
+	GetName() string
+	GetIsActive() bool
+	GetOpenStatus() OpenStatus
+}
+
+type WomanEntity interface {
+	IsNil() bool
+	GetID() uint
+	GetCompanyID() uint
+	GetName() string
+	GetAge() *int
+	GetBirthplace() *string
+	GetBloodType() *string
+	GetHobby() *string
+	GetIsActive() bool
+	GetImages() collection.Collection[WomanImage]
+}
+
+type BlogEntity interface {
+	IsNil() bool
+	GetID() uint
+	GetWomanID() uint
+	GetTitle() string
+	GetBody() *string
+	GetIsPublished() bool
+	GetPhotos() collection.Collection[Photo]
+}
+
+type ManagementStaffEntity interface {
+	IsNil() bool
+	GetID() uint
+	GetCompanyID() uint
+	GetStoreID() uint
+	GetName() string
+	GetEmail() string
+}

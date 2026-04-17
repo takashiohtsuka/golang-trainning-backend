@@ -1,0 +1,50 @@
+package managementstaff
+
+import (
+	"time"
+
+	"golang-trainning-backend/pkg/domain/entity"
+	"golang-trainning-backend/pkg/infrastructure/model"
+
+	"gorm.io/gorm"
+)
+
+func ToEntity(m *model.ManagementStaff) *entity.ManagementStaff {
+	return &entity.ManagementStaff{
+		ID:        m.ID,
+		CompanyID: m.CompanyID,
+		StoreID:   m.StoreID,
+		Name:      m.Name,
+		Email:     m.Email,
+		CreatedAt: m.CreatedAt,
+		UpdatedAt: m.UpdatedAt,
+		DeletedAt: toTimePtr(m.DeletedAt),
+	}
+}
+
+func ToOrmModel(e *entity.ManagementStaff) *model.ManagementStaff {
+	return &model.ManagementStaff{
+		ID:        e.ID,
+		CompanyID: e.CompanyID,
+		StoreID:   e.StoreID,
+		Name:      e.Name,
+		Email:     e.Email,
+		CreatedAt: e.CreatedAt,
+		UpdatedAt: e.UpdatedAt,
+		DeletedAt: toDeletedAt(e.DeletedAt),
+	}
+}
+
+func toTimePtr(d gorm.DeletedAt) *time.Time {
+	if d.Valid {
+		return &d.Time
+	}
+	return nil
+}
+
+func toDeletedAt(t *time.Time) gorm.DeletedAt {
+	if t != nil {
+		return gorm.DeletedAt{Time: *t, Valid: true}
+	}
+	return gorm.DeletedAt{}
+}

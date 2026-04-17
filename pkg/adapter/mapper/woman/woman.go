@@ -1,0 +1,60 @@
+package woman
+
+import (
+	"time"
+
+	"golang-trainning-backend/pkg/domain/entity"
+	"golang-trainning-backend/pkg/domain/collection"
+	"golang-trainning-backend/pkg/infrastructure/model"
+
+	"gorm.io/gorm"
+)
+
+// ToEntity はORM modelをentityに変換する。
+// StoreAssignments は含まれないため、リポジトリが別途ロード後にセットすること。
+func ToEntity(m *model.Woman) *entity.Woman {
+	return &entity.Woman{
+		ID:         m.ID,
+		CompanyID:  m.CompanyID,
+		Name:       m.Name,
+		Age:        m.Age,
+		Birthplace: m.Birthplace,
+		BloodType:  m.BloodType,
+		Hobby:      m.Hobby,
+		IsActive:   m.IsActive,
+		Images:     collection.NewCollection([]entity.WomanImage{}),
+		CreatedAt:  m.CreatedAt,
+		UpdatedAt:  m.UpdatedAt,
+		DeletedAt:  toTimePtr(m.DeletedAt),
+	}
+}
+
+func ToOrmModel(e *entity.Woman) *model.Woman {
+	return &model.Woman{
+		ID:         e.ID,
+		CompanyID:  e.CompanyID,
+		Name:       e.Name,
+		Age:        e.Age,
+		Birthplace: e.Birthplace,
+		BloodType:  e.BloodType,
+		Hobby:      e.Hobby,
+		IsActive:   e.IsActive,
+		CreatedAt:  e.CreatedAt,
+		UpdatedAt:  e.UpdatedAt,
+		DeletedAt:  toDeletedAt(e.DeletedAt),
+	}
+}
+
+func toTimePtr(d gorm.DeletedAt) *time.Time {
+	if d.Valid {
+		return &d.Time
+	}
+	return nil
+}
+
+func toDeletedAt(t *time.Time) gorm.DeletedAt {
+	if t != nil {
+		return gorm.DeletedAt{Time: *t, Valid: true}
+	}
+	return gorm.DeletedAt{}
+}
