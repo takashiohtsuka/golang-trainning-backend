@@ -1,24 +1,50 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
 	requestStores "golang-trainning-backend/pkg/adapter/request/stores"
+	"golang-trainning-backend/pkg/apperror"
 	"golang-trainning-backend/pkg/usecase/inputport"
 )
 
+
 type storeController struct {
-	storeUsecase inputport.StoreUsecase
+	storeUsecase      inputport.StoreUsecase
+	storeQueryUsecase inputport.StoreQueryUsecase
 }
 
 type Store interface {
+	GetStore(c Context) error
 	CreateStore(c Context) error
 	UpdateStore(c Context) error
 }
 
-func NewStoreController(u inputport.StoreUsecase) Store {
-	return &storeController{u}
+func NewStoreController(u inputport.StoreUsecase, q inputport.StoreQueryUsecase) Store {
+	return &storeController{u, q}
+}
+
+func (sc *storeController) GetStore(ctx Context) error {
+	var req requestStores.Get
+	if err := ctx.Bind(&req); err != nil {
+		return err
+	}
+	if err := ctx.Validate(&req); err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	store, err := sc.storeQueryUsecase.GetByID(ctx.Request().Context(), req.ID)
+	if err != nil {
+		var notFound *apperror.NotFoundException
+		if errors.As(err, &notFound) {
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": notFound.Error()})
+		}
+		return err
+	}
+
+	return ctx.JSON(http.StatusOK, store)
 }
 
 func (sc *storeController) CreateStore(ctx Context) error {

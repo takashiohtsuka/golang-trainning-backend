@@ -10,6 +10,7 @@ func NewRouter(e *echo.Echo, c controller.AppController) *echo.Echo {
 	g := e.Group("/backend")
 
 	g.POST("/companies", func(ctx echo.Context) error { return c.Company.CreateCompany(ctx) })
+	g.GET("/stores/:id", func(ctx echo.Context) error { return c.Store.GetStore(ctx) })
 	g.POST("/stores", func(ctx echo.Context) error { return c.Store.CreateStore(ctx) })
 	g.PUT("/stores/:id", func(ctx echo.Context) error { return c.Store.UpdateStore(ctx) })
 	g.POST("/management_staffs", func(ctx echo.Context) error { return c.ManagementStaff.CreateManagementStaff(ctx) })

@@ -13,5 +13,8 @@ func (r *registry) NewStoreController() controller.Store {
 		backendrepository.NewCompanyRepository(r.db),
 		repository.NewUnitOfWork(r.db),
 	)
-	return controller.NewStoreController(u)
+	q := interactor.NewStoreQueryUsecase(
+		backendrepository.NewStoreQueryRepository(r.db),
+	)
+	return controller.NewStoreController(u, q)
 }
