@@ -26,5 +26,10 @@ func (r *registry) NewAppController() controller.AppController {
 		Store:           r.NewStoreController(),
 		ManagementStaff: r.NewManagementStaffController(),
 		Woman:           r.NewWomanController(),
+		Region:          r.NewRegionController(),
+		Prefecture:      r.NewPrefectureController(),
+		District:        r.NewDistrictController(),
+		BusinessType:    r.NewBusinessTypeController(),
+		ContractPlan:    r.NewContractPlanController(),
 	}
 }

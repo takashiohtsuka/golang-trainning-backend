@@ -10,7 +10,7 @@ func ToQueryModel(row map[string]any) *querymodel.StoreQueryModel {
 		ID:               helper.ToUint(row["id"]),
 		CompanyID:        helper.ToUint(row["company_id"]),
 		Name:             helper.ToString(row["name"]),
-		IsActive:         helper.ToBool(row["is_active"]),
+		IsActive:         helper.ToBool(helper.ToInt(row["is_active"])),
 		OpenStatus:       helper.ToString(row["open_status"]),
 		BusinessTypeCode: helper.ToString(row["business_type_code"]),
 		ContractPlanCode: helper.ToString(row["contract_plan_code"]),

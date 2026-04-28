@@ -3,31 +3,19 @@ package helper
 import (
 	"strconv"
 	"time"
+
+	"github.com/spf13/cast"
 )
 
+func ToInt(v any) int {
+	return cast.ToInt(v)
+}
+
 func ToUint(v any) uint {
-	if v == nil {
-		return 0
+	if val, ok := v.(int8); ok {
+		return uint(val)
 	}
-	switch val := v.(type) {
-	case int32:
-		return uint(val)
-	case uint32:
-		return uint(val)
-	case int64:
-		return uint(val)
-	case uint64:
-		return uint(val)
-	case float64:
-		return uint(val)
-	case []byte:
-		n, _ := strconv.ParseUint(string(val), 10, 64)
-		return uint(n)
-	case string:
-		n, _ := strconv.ParseUint(val, 10, 64)
-		return uint(n)
-	}
-	return 0
+	return cast.ToUint(v)
 }
 
 func ToString(v any) string {
@@ -99,20 +87,5 @@ func ToTimePtr(v any) *time.Time {
 }
 
 func ToBool(v any) bool {
-	if v == nil {
-		return false
-	}
-	switch val := v.(type) {
-	case int32:
-		return val == 1
-	case int64:
-		return val == 1
-	case bool:
-		return val
-	case []byte:
-		return string(val) == "1"
-	case string:
-		return val == "1"
-	}
-	return false
+	return cast.ToBool(v)
 }

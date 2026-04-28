@@ -5,4 +5,9 @@ type AppController struct {
 	Store           interface{ Store }
 	ManagementStaff interface{ ManagementStaff }
 	Woman           interface{ Woman }
+	Region          interface{ Region }
+	Prefecture      interface{ Prefecture }
+	District        interface{ District }
+	BusinessType    interface{ BusinessType }
+	ContractPlan    interface{ ContractPlan }
 }

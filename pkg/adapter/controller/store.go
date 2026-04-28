@@ -17,6 +17,7 @@ type storeController struct {
 }
 
 type Store interface {
+	GetStores(c Context) error
 	GetStore(c Context) error
 	CreateStore(c Context) error
 	UpdateStore(c Context) error
@@ -24,6 +25,23 @@ type Store interface {
 
 func NewStoreController(u inputport.StoreUsecase, q inputport.StoreQueryUsecase) Store {
 	return &storeController{u, q}
+}
+
+func (sc *storeController) GetStores(ctx Context) error {
+	var req requestStores.List
+	if err := ctx.Bind(&req); err != nil {
+		return err
+	}
+	if err := ctx.Validate(&req); err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+	}
+
+	stores, err := sc.storeQueryUsecase.GetList(ctx.Request().Context(), req.ToConditions())
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(http.StatusOK, stores)
 }
 
 func (sc *storeController) GetStore(ctx Context) error {

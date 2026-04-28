@@ -7,6 +7,7 @@ import (
 	"golang-trainning-backend/pkg/querymodel"
 	"golang-trainning-backend/pkg/usecase/inputport"
 	"golang-trainning-backend/pkg/usecase/outputport"
+	"golang-trainning-backend/pkg/usecase/query"
 )
 
 type storeQueryUsecase struct {
@@ -26,4 +27,8 @@ func (u *storeQueryUsecase) GetByID(ctx context.Context, id uint) (querymodel.St
 		return &querymodel.NilStoreQueryModel{}, apperror.NewNotFoundException("store not found")
 	}
 	return store, nil
+}
+
+func (u *storeQueryUsecase) GetList(ctx context.Context, conditions []query.Condition) ([]querymodel.StoreQuery, error) {
+	return u.storeQueryRepository.FindAll(ctx, conditions)
 }
