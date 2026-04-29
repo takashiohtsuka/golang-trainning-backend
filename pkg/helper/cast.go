@@ -75,6 +75,17 @@ func ToIntPtr(v any) *int {
 	return nil
 }
 
+func ToTime(v any) time.Time {
+	if v == nil {
+		return time.Time{}
+	}
+	t, ok := v.(time.Time)
+	if !ok {
+		return time.Time{}
+	}
+	return t
+}
+
 func ToTimePtr(v any) *time.Time {
 	if v == nil {
 		return nil

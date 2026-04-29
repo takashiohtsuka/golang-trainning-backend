@@ -4,6 +4,7 @@ import "net/http"
 
 type Context interface {
 	JSON(code int, i any) error
+	NoContent(code int) error
 	Bind(i any) error
 	Validate(i any) error
 	Request() *http.Request

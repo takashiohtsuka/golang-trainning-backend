@@ -23,6 +23,12 @@ func NewRouter(e *echo.Echo, c controller.AppController) *echo.Echo {
 	g.GET("/districts", func(ctx echo.Context) error { return c.District.GetDistricts(ctx) })
 	g.GET("/business_types", func(ctx echo.Context) error { return c.BusinessType.GetBusinessTypes(ctx) })
 	g.GET("/contract_plans", func(ctx echo.Context) error { return c.ContractPlan.GetContractPlans(ctx) })
+	g.POST("/stores/:id/immediate_available_women", func(ctx echo.Context) error {
+		return c.ImmediateAvailableWoman.Create(ctx)
+	})
+	g.DELETE("/stores/:id/immediate_available_women/:woman_id", func(ctx echo.Context) error {
+		return c.ImmediateAvailableWoman.Delete(ctx)
+	})
 
 	return e
 }

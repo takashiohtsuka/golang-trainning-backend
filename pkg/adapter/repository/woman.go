@@ -28,10 +28,13 @@ const womanJoinSQL = `
 		w.id, w.company_id, w.name, w.age, w.birthplace, w.blood_type, w.hobby, w.is_active,
 		w.created_at, w.updated_at, w.deleted_at,
 		wi.id AS wi_id, wi.woman_id AS wi_woman_id, wi.path AS wi_path,
-		wi.created_at AS wi_created_at, wi.updated_at AS wi_updated_at
+		wi.created_at AS wi_created_at, wi.updated_at AS wi_updated_at,
+		iaw.id AS iaw_id, iaw.store_id AS iaw_store_id, iaw.woman_id AS iaw_woman_id,
+		iaw.expires_at AS iaw_expires_at, iaw.created_at AS iaw_created_at
 	FROM women w
 	LEFT JOIN woman_store_assignments wsa ON wsa.woman_id = w.id
 	LEFT JOIN woman_images wi ON wi.woman_id = w.id
+	LEFT JOIN immediate_available_women iaw ON iaw.woman_id = w.id AND iaw.expires_at > NOW()
 	WHERE w.deleted_at IS NULL`
 
 func buildWomanWhereClause(conditions []query.Condition) (string, []any) {
@@ -102,12 +105,22 @@ func groupWomen(rows []map[string]any) []*entity.Woman {
 		if imageID != 0 && !imageSeen[womanID][imageID] {
 			imageSeen[womanID][imageID] = true
 			imagesByID[womanID] = append(imagesByID[womanID], entity.WomanImage{
-				ID:      imageID,
-				WomanID: helper.ToUint(row["wi_woman_id"]),
+				ID:        imageID,
+				WomanID:   helper.ToUint(row["wi_woman_id"]),
 				Path:      helper.ToString(row["wi_path"]),
 				CreatedAt: helper.ToTimePtr(row["wi_created_at"]),
 				UpdatedAt: helper.ToTimePtr(row["wi_updated_at"]),
 			})
+		}
+
+		if iawID := helper.ToUint(row["iaw_id"]); iawID != 0 {
+			womanMap[womanID].ImmediateAvailableWoman = &entity.ImmediateAvailableWoman{
+				ID:        iawID,
+				StoreID:   helper.ToUint(row["iaw_store_id"]),
+				WomanID:   helper.ToUint(row["iaw_woman_id"]),
+				ExpiresAt: helper.ToTime(row["iaw_expires_at"]),
+				CreatedAt: helper.ToTime(row["iaw_created_at"]),
+			}
 		}
 	}
 
@@ -165,4 +178,43 @@ func (r *womanRepository) Update(ctx context.Context, w *entity.Woman) error {
 
 func (r *womanRepository) SaveImage(ctx context.Context, womanID uint, path string) error {
 	return r.db.WithContext(ctx).Create(&model.WomanImage{WomanID: womanID, Path: path}).Error
+}
+
+func (r *womanRepository) FindActiveImmediateAvailableByStore(ctx context.Context, storeID uint) ([]*entity.ImmediateAvailableWoman, error) {
+	var rows []map[string]any
+	if err := r.db.WithContext(ctx).Raw(
+		`SELECT id, store_id, woman_id, expires_at, created_at
+		 FROM immediate_available_women
+		 WHERE store_id = ? AND expires_at > NOW()
+		 ORDER BY id`,
+		storeID,
+	).Scan(&rows).Error; err != nil {
+		return nil, err
+	}
+
+	result := make([]*entity.ImmediateAvailableWoman, 0, len(rows))
+	for _, row := range rows {
+		result = append(result, &entity.ImmediateAvailableWoman{
+			ID:        helper.ToUint(row["id"]),
+			StoreID:   helper.ToUint(row["store_id"]),
+			WomanID:   helper.ToUint(row["woman_id"]),
+			ExpiresAt: helper.ToTime(row["expires_at"]),
+			CreatedAt: helper.ToTime(row["created_at"]),
+		})
+	}
+	return result, nil
+}
+
+func (r *womanRepository) CreateImmediateAvailable(ctx context.Context, iaw *entity.ImmediateAvailableWoman) error {
+	return r.db.WithContext(ctx).Exec(
+		`INSERT INTO immediate_available_women (store_id, woman_id, expires_at) VALUES (?, ?, ?)`,
+		iaw.StoreID, iaw.WomanID, iaw.ExpiresAt,
+	).Error
+}
+
+func (r *womanRepository) DeleteImmediateAvailable(ctx context.Context, storeID, womanID uint) error {
+	return r.db.WithContext(ctx).Exec(
+		`DELETE FROM immediate_available_women WHERE store_id = ? AND woman_id = ?`,
+		storeID, womanID,
+	).Error
 }

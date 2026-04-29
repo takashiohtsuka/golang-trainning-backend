@@ -20,3 +20,14 @@ func (cp ContractPlan) GetCode() string {
 func (cp ContractPlan) IsEmpty() bool {
 	return cp.Get() == ""
 }
+
+func (cp ContractPlan) GetImmediateAvailableLimit() int {
+	switch cp.GetCode() {
+	case "standard":
+		return 3
+	case "premium":
+		return 5
+	default:
+		return 1
+	}
+}
