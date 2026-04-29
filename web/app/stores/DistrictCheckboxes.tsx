@@ -4,14 +4,12 @@ import { useDistricts } from "@/hooks/useDistricts";
 
 type Props = {
   prefectureId: number | null;
-  businessTypeIds: number[];
-  contractPlanIds: number[];
   value: number[];
   onChange: (districtIds: number[]) => void;
 };
 
-export default function DistrictCheckboxes({ prefectureId, businessTypeIds, contractPlanIds, value, onChange }: Props) {
-  const { districts } = useDistricts(prefectureId, businessTypeIds, contractPlanIds);
+export default function DistrictCheckboxes({ prefectureId, value, onChange }: Props) {
+  const { districts } = useDistricts(prefectureId);
 
   const handleChange = (districtId: number, checked: boolean) => {
     const districtIds = checked

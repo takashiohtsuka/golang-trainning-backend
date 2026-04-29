@@ -28,7 +28,7 @@ func (pc *prefectureController) GetPrefectures(ctx Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	prefectures, err := pc.prefectureUsecase.GetByRegionID(ctx.Request().Context(), req.RegionID, req.BusinessTypeIDs, req.ContractPlanIDs)
+	prefectures, err := pc.prefectureUsecase.GetByRegionID(ctx.Request().Context(), req.RegionID)
 	if err != nil {
 		return err
 	}

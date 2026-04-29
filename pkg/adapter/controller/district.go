@@ -28,7 +28,7 @@ func (dc *districtController) GetDistricts(ctx Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 
-	districts, err := dc.districtUsecase.GetByPrefectureID(ctx.Request().Context(), req.PrefectureID, req.BusinessTypeIDs, req.ContractPlanIDs)
+	districts, err := dc.districtUsecase.GetByPrefectureID(ctx.Request().Context(), req.PrefectureID)
 	if err != nil {
 		return err
 	}

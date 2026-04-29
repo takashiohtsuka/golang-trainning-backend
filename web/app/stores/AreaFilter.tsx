@@ -33,11 +33,11 @@ export default function AreaFilter({ value, onChange }: Props) {
   };
 
   const handleBusinessTypeChange = (businessTypeIds: number[]) => {
-    onChange({ ...value, businessTypeIds, prefectureId: null, districtIds: [] });
+    onChange({ ...value, businessTypeIds });
   };
 
   const handleContractPlanChange = (contractPlanIds: number[]) => {
-    onChange({ ...value, contractPlanIds, prefectureId: null, districtIds: [] });
+    onChange({ ...value, contractPlanIds });
   };
 
   return (
@@ -53,15 +53,11 @@ export default function AreaFilter({ value, onChange }: Props) {
       <RegionSelect value={value.regionId} onChange={handleRegionChange} />
       <PrefectureSelect
         regionId={value.regionId}
-        businessTypeIds={value.businessTypeIds}
-        contractPlanIds={value.contractPlanIds}
         value={value.prefectureId}
         onChange={handlePrefectureChange}
       />
       <DistrictCheckboxes
         prefectureId={value.prefectureId}
-        businessTypeIds={value.businessTypeIds}
-        contractPlanIds={value.contractPlanIds}
         value={value.districtIds}
         onChange={handleDistrictChange}
       />

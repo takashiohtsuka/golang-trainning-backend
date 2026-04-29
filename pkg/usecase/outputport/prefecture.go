@@ -7,5 +7,5 @@ import (
 )
 
 type PrefectureRepository interface {
-	FindByRegionID(ctx context.Context, regionID uint, businessTypeIDs []uint, contractPlanIDs []uint) ([]querymodel.PrefectureQuery, error)
+	FindByRegionID(ctx context.Context, regionID uint) ([]querymodel.PrefectureQuery, error)
 }

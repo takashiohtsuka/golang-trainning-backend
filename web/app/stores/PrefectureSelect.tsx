@@ -4,14 +4,12 @@ import { usePrefectures } from "@/hooks/usePrefectures";
 
 type Props = {
   regionId: number | null;
-  businessTypeIds: number[];
-  contractPlanIds: number[];
   value: number | null;
   onChange: (prefectureId: number | null) => void;
 };
 
-export default function PrefectureSelect({ regionId, businessTypeIds, contractPlanIds, value, onChange }: Props) {
-  const { prefectures } = usePrefectures(regionId, businessTypeIds, contractPlanIds);
+export default function PrefectureSelect({ regionId, value, onChange }: Props) {
+  const { prefectures } = usePrefectures(regionId);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const prefectureId = e.target.value ? Number(e.target.value) : null;

@@ -16,6 +16,6 @@ func NewPrefectureUsecase(r outputport.PrefectureRepository) inputport.Prefectur
 	return &prefectureUsecase{prefectureRepository: r}
 }
 
-func (u *prefectureUsecase) GetByRegionID(ctx context.Context, regionID uint, businessTypeIDs []uint, contractPlanIDs []uint) ([]querymodel.PrefectureQuery, error) {
-	return u.prefectureRepository.FindByRegionID(ctx, regionID, businessTypeIDs, contractPlanIDs)
+func (u *prefectureUsecase) GetByRegionID(ctx context.Context, regionID uint) ([]querymodel.PrefectureQuery, error) {
+	return u.prefectureRepository.FindByRegionID(ctx, regionID)
 }

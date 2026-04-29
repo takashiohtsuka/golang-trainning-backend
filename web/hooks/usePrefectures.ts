@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchPrefectures } from "@/api/prefecture";
 import type { Prefecture } from "@/interfaces/prefecture";
 
-export function usePrefectures(
-  regionId: number | null,
-  businessTypeIds: number[] = [],
-  contractPlanIds: number[] = []
-) {
+export function usePrefectures(regionId: number | null) {
   const [prefectures, setPrefectures] = useState<Prefecture[]>([]);
 
   useEffect(() => {
@@ -14,11 +10,8 @@ export function usePrefectures(
       setPrefectures([]);
       return;
     }
-    fetchPrefectures({ regionId, businessTypeIds, contractPlanIds })
-      .then(setPrefectures)
-      .catch(console.error);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [regionId, JSON.stringify(businessTypeIds), JSON.stringify(contractPlanIds)]);
+    fetchPrefectures(regionId).then(setPrefectures).catch(console.error);
+  }, [regionId]);
 
   return { prefectures };
 }

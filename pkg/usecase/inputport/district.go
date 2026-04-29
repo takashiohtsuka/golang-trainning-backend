@@ -7,5 +7,5 @@ import (
 )
 
 type DistrictUsecase interface {
-	GetByPrefectureID(ctx context.Context, prefectureID uint, businessTypeIDs []uint, contractPlanIDs []uint) ([]querymodel.DistrictQuery, error)
+	GetByPrefectureID(ctx context.Context, prefectureID uint) ([]querymodel.DistrictQuery, error)
 }
